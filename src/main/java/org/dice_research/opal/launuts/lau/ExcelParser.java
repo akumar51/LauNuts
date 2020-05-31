@@ -14,19 +14,20 @@ public class ExcelParser implements LauReaderInterface {
     List<LauContainer> lauContainerList = new LinkedList<LauContainer>();
     Map<String, List<String>> getCodes = new HashMap<>();
     HashMap<String, Integer> getkeys = new HashMap<String, Integer>();
+    HashMap<String, LauContainer> laucodeToLauContainerMap = new HashMap<String, LauContainer>();
+    HashMap<String, HashMap<String, LauContainer>> index;
     private List<String> countryIds;
-    private String currentCountryId;
     private boolean parsed = false;
 
     @Override
-    public LauReaderInterface setLauSourceDirectory(File directory) throws IOException {
+    public LauReaderInterface setLauSourceDirectory() throws IOException {
 
         workbook = WorkbookFactory.create(new File(FILE_NAME));
         return this;
     }
 
     @Override
-    public List<String> getCountryIds() {
+    public List<String> getCountryIds() throws LauReaderException {
 
         if (!parsed)
             parse();
@@ -35,34 +36,39 @@ public class ExcelParser implements LauReaderInterface {
     }
 
     @Override
-    public Map<String, List<String>> getCodes(String countryId) {
+    public Map<String, List<String>> getCodes(String countryId) throws LauReaderException {
 
-        if (!parsed) {
-            currentCountryId = countryId;
-            parse();
+        if (getCountryIds().contains(countryId)) {
+            sheet = workbook.getSheet(countryId);
+
+            if (!parsed) {
+                parse();
+            }
         }
 
         return getCodes;
+
     }
 
     @Override
-    public LauContainer getData(String nutsCode, String lauCode) {
-
+    public LauContainer getData(String nutsCode, String lauCode) throws LauReaderException {
+        LauContainer container = null;
 
         if (!parsed) {
             parse();
         }
 
-        for (LauContainer container : lauContainerList) {
-            if (nutsCode.equals(container.nuts3code) && lauCode.equals(container.lauCode))
-                return container;
+        Map<String, LauContainer> lauCodeToContainerMap;
+        if (index.containsKey(nutsCode)) {
+            lauCodeToContainerMap = index.get(nutsCode);
+            container = lauCodeToContainerMap.get(lauCode);
         }
 
-        return null;
+        return container;
     }
 
     @Override
-    public HashMap<String, Integer> getKeys() {
+    public HashMap<String, Integer> getKeys() throws LauReaderException {
 
         if (!parsed) {
             parse();
@@ -71,7 +77,7 @@ public class ExcelParser implements LauReaderInterface {
         return getkeys;
     }
 
-    private void parse() {
+    private void parse() throws LauReaderException {
 
         String countryId;
 
@@ -82,16 +88,12 @@ public class ExcelParser implements LauReaderInterface {
                 if (countryId.length() == 2)
                     countryIds.add(countryId);
             }
-        }
 
-        if (countryIds.contains("DE")) {
-            sheet = workbook.getSheet("DE");
-            System.out.print(sheet);
-        } else {
-            System.out.print("No Valid Country ID");
             return;
         }
 
+
+        //creates the easy to read map according to sheet headers
         getkeys.put("nuts3code", 0);
         getkeys.put("lauCode", 1);
         getkeys.put("lauNameNational", 2);
@@ -117,9 +119,10 @@ public class ExcelParser implements LauReaderInterface {
 
 
         String nutsCode = null;
-        String  lauCode ;
+        String lauCode;
         List<String> lauCodes = new ArrayList<>();
 
+        // creates the map getCodes which is  map<nutsCode ,list<laucodes>>
         Iterator<Row> rowIterator1 = sheet.rowIterator();
         while (rowIterator1.hasNext()) {
             Row row = rowIterator1.next();
@@ -153,34 +156,50 @@ public class ExcelParser implements LauReaderInterface {
 //
 //        }
 
+        index = new HashMap<String, HashMap<String, LauContainer>>();
+
         for (Row row : sheet) {
             LauContainer container = new LauContainer();
-            container.nuts3code = row.getCell(getkeys.get("nuts3code")).getStringCellValue();
-            container.lauCode = row.getCell(getkeys.get("lauCode")).getStringCellValue();
-            container.lauNameLatin = row.getCell(getkeys.get("lauNameLatin")).getStringCellValue();
-            container.lauNameNational = row.getCell(getkeys.get("lauNameNational")).getStringCellValue();
-            container.change = row.getCell(getkeys.get("change")).getStringCellValue();
-            container.population = row.getCell(getkeys.get("population")).getStringCellValue();
-            container.cityIdChange = row.getCell(getkeys.get("cityIdChange")).getStringCellValue();
-            container.cityId = row.getCell(getkeys.get("cityId")).getStringCellValue();
-            container.cityName = row.getCell(getkeys.get("cityName")).getStringCellValue();
-            container.greaterCityId = row.getCell(getkeys.get("greaterCityId")).getStringCellValue();
-            container.greaterCityIdChange = row.getCell(getkeys.get("greaterCityIdChange")).getStringCellValue();
-            container.greaterCityName = row.getCell(getkeys.get("greaterCityName")).getStringCellValue();
-            container.coastalArea = row.getCell(getkeys.get("coastalArea")).getStringCellValue();
-            container.degubra = row.getCell(getkeys.get("degubra")).getStringCellValue();
-            container.degChange = row.getCell(getkeys.get("degChange")).getStringCellValue();
-            container.coastalAreaChange = row.getCell(getkeys.get("coastalAreaChange")).getStringCellValue();
-            container.fuaId = row.getCell(getkeys.get("fuaId")).getStringCellValue();
-            container.fuaIdChange = row.getCell(getkeys.get("fuaIdChange")).getStringCellValue();
-            container.fuaName = row.getCell(getkeys.get("fuaName")).getStringCellValue();
+
+            container.nuts3code = cellValues(row,"nuts3code");
+            container.lauCode = cellValues(row,"lauCode");
+            container.lauNameLatin = cellValues(row,"lauNameLatin");;
+            container.lauNameNational = cellValues(row,"lauNameNational");
+            container.change = cellValues(row,"change");
+            container.population = cellValues(row,"population");
+            container.population = cellValues(row,"totalArea");
+            container.degubra = cellValues(row,"degubra");
+            container.degChange = cellValues(row,"degChange");
+            container.coastalArea = cellValues(row,"coastalArea");
+            container.coastalAreaChange = cellValues(row,"coastalAreaChange");
+            container.cityId = cellValues(row,"cityId");
+            container.cityIdChange = cellValues(row,"cityIdChange");
+            container.cityName = cellValues(row,"cityName");;
+            container.greaterCityId = cellValues(row,"greaterCityId");
+            container.greaterCityIdChange = cellValues(row,"greaterCityIdChange");
+            container.greaterCityName = cellValues(row,"greaterCityName");
+            container.fuaId = cellValues(row,"fuaId");
+            container.fuaIdChange = cellValues(row,"fuaIdChange");
+            container.fuaName = cellValues(row,"fuaName");
+
             lauContainerList.add(container);
+
+            laucodeToLauContainerMap.put(container.lauCode, container);
+            index.put(container.nuts3code, laucodeToLauContainerMap);
+
         }
 
         parsed = true;
+
     }
 
+    public String cellValues(Row row , String key) {
+        
+        DataFormatter formatter = new DataFormatter();
+        return formatter.formatCellValue(row.getCell(getkeys.get(key))) ;
+    }
 }
+<<<<<<< HEAD
 // TODO J UNIT -  count the number of rows parsed by the code -  fort hat (sheet rows = lauContainerlist.length)
 //
 //        getkeys.put("lauCode","LAU CODE");
@@ -239,3 +258,5 @@ public class ExcelParser implements LauReaderInterface {
 //            container.fuaName = row.getCell(getkeys.get("fuaName")).getStringCellValue();
 //            lauContainerList.add(container);
 //        }
+=======
+>>>>>>> 48e469276ad6500d3ec4dbf83087d24d947b1727
