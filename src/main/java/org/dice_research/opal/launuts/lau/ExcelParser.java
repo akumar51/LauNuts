@@ -113,7 +113,7 @@ public class ExcelParser implements LauReaderInterface {
         getkeys.put("fuaIdChange", 18);
         getkeys.put("fuaName", 19);
 
-        //TODO create J-Unit to check for the uniformity of the headers
+        //TODO create J-Unit to check for the uniformity of the headers btw different sheets
 
 
         String nutsCode = null;
@@ -181,7 +181,7 @@ public class ExcelParser implements LauReaderInterface {
     }
 
 }
-
+// TODO J UNIT -  count the number of rows parsed by the code -  fort hat (sheet rows = lauContainerlist.length)
 //
 //        getkeys.put("lauCode","LAU CODE");
 //                getkeys.put("lauNameLatin","LAU NAME LATIN CHANGE(Y/N)");
