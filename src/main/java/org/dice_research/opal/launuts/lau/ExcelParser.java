@@ -77,8 +77,8 @@ public class ExcelParser implements LauReaderInterface {
         return getkeys;
     }
 
-    private void parse() throws LauReaderException {
-
+    //private void parse() throws LauReaderException {
+    public void parse() throws LauReaderException {
         String countryId;
 
         if (countryIds == null) {
@@ -199,64 +199,4 @@ public class ExcelParser implements LauReaderInterface {
         return formatter.formatCellValue(row.getCell(getkeys.get(key))) ;
     }
 }
-<<<<<<< HEAD
-// TODO J UNIT -  count the number of rows parsed by the code -  fort hat (sheet rows = lauContainerlist.length)
-//
-//        getkeys.put("lauCode","LAU CODE");
-//                getkeys.put("lauNameLatin","LAU NAME LATIN CHANGE(Y/N)");
-//                getkeys.put("lauNameNational","LAU NAME NATIONAL");
-//                getkeys.put("nuts3code","NUTS 3CODE");
-//                getkeys.put("population","POPULATION");
-//                getkeys.put("totalArea","TOTAL AREA(m2)");
-//                getkeys.put("degubra","DEGURBA");
-//                getkeys.put("degChange","DEG change compared to last year");
-//                getkeys.put("coastalArea","COASTAL AREA(yes/no)");
-//                getkeys.put("coastalAreaChange","COAST change compared to last year");
-//                getkeys.put("cityId","CITY_ID");
-//                getkeys.put("cityIdChange","CITY_ID change compared to last year");
-//                getkeys.put("cityName","CITY_NAME");
-//                getkeys.put("greaterCityId","GREATER_CITY_ID");
-//                getkeys.put("greaterCityIdChange","GREATER_CITY_ID change compared to last year");
-//                getkeys.put("greaterCityName","GREATER_CITY_NAME");
-//                getkeys.put("fuaId","FUA_ID");
-//                getkeys.put("fuaIdChange","FUA_ID change compared to last year");
-//                getkeys.put("fuaName","FUA_NAME");
 
-
-//            DataFormatter dataFormatter = new DataFormatter();
-//            Row row1 = sheet.getRow(0);
-//            Iterator<Cell> cellIterator = row1.cellIterator();
-//            while (cellIterator.hasNext()) {
-//                Cell cell = cellIterator.next();
-//                String cellValue = dataFormatter.formatCellValue(cell);
-//                getKeys.add(cellValue);
-//                System.out.print(cellValue);
-//            }
-
-
-//        Iterator<Row> rowIterator = sheet.rowIterator();
-//        while (rowIterator.hasNext()) {
-//            Row row = rowIterator.next();
-//            LauContainer container = new LauContainer();
-////            container.nuts3code = row.getCell(getkeys.get("nuts3Code")).getStringCellValue();
-//            container.lauNameLatin = row.getCell(getkeys.get("lauNameLatin")).getStringCellValue();
-//            container.lauNameNational = row.getCell(getkeys.get("lauNameNational")).getStringCellValue();
-//            container.lauCode = row.getCell(getkeys.get("lauCode")).getStringCellValue();
-//            container.population = row.getCell(getkeys.get("population")).getStringCellValue();
-//            container.cityIdChange = row.getCell(getkeys.get("cityIdChange")).getStringCellValue();
-//            container.cityId = row.getCell(getkeys.get("cityId")).getStringCellValue();
-//            container.cityName = row.getCell(getkeys.get("cityName")).getStringCellValue();
-//            container.greaterCityId = row.getCell(getkeys.get("greaterCityId")).getStringCellValue();
-//            container.greaterCityIdChange = row.getCell(getkeys.get("greaterCityIdChange")).getStringCellValue();
-//            container.greaterCityName = row.getCell(getkeys.get("greaterCityName")).getStringCellValue();
-//            container.coastalArea = row.getCell(getkeys.get("coastalArea")).getStringCellValue();
-//            container.degubra = row.getCell(getkeys.get("degubra")).getStringCellValue();
-//            container.degChange = row.getCell(getkeys.get("degChange")).getStringCellValue();
-//            container.coastalAreaChange = row.getCell(getkeys.get("coastalAreaChange")).getStringCellValue();
-//            container.fuaId = row.getCell(getkeys.get("fuaId")).getStringCellValue();
-//            container.fuaIdChange = row.getCell(getkeys.get("fuaIdChange")).getStringCellValue();
-//            container.fuaName = row.getCell(getkeys.get("fuaName")).getStringCellValue();
-//            lauContainerList.add(container);
-//        }
-=======
->>>>>>> 48e469276ad6500d3ec4dbf83087d24d947b1727
