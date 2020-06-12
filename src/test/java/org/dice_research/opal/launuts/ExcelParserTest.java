@@ -50,6 +50,22 @@ public class ExcelParserTest {
     }
     
     @Test
+	public void testFileName1() throws Exception {
+		//Test: Checking if the container is fetching correct value
+		
+		LauContainer file_name = excelParser.getData("DEF04", "01004000");
+		assertEquals("Neumünster | Neumünster, Stadt | 01004000", file_name.toString());
+	}
+	
+	@Test
+	public void testFileName12() throws Exception {
+		//Test: Checking if the container is fetching correct value
+		
+		LauContainer file_name = excelParser.getData("DE93A", "03360006");
+		assertEquals("Ebstorf | Ebstorf,Klosterflecken | 03360006", file_name.toString());
+	}
+    
+    @Test
 	public void testContainerUK() throws Exception {
 		//Test: Checking if container is not empty for country code : UK
     	
@@ -88,4 +104,5 @@ public class ExcelParserTest {
 		String file_name = excelParser.FILE_NAME;
 		assertEquals("EU-28-LAU-2019-NUTS-2016.xlsx", file_name);
 	}
+	
 }
