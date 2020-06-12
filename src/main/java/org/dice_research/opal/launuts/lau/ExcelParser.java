@@ -16,7 +16,7 @@ public class ExcelParser implements LauReaderInterface {
     HashMap<String, Integer> getkeys = new HashMap<String, Integer>();
     HashMap<String, LauContainer> laucodeToLauContainerMap = new HashMap<String, LauContainer>();
     HashMap<String, HashMap<String, LauContainer>> index;
-    private List<String> countryIds;
+    public List<String> countryIds;
     private boolean parsed = false;
 
     @Override
