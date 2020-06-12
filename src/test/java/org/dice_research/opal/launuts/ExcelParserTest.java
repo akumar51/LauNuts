@@ -1,115 +1,98 @@
 package org.dice_research.opal.launuts;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.dice_research.opal.launuts.dbpedia.DbpediaPlaceContainer;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.dice_research.opal.launuts.lau.ExcelParser;
 import org.dice_research.opal.launuts.lau.LauContainer;
-import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-/* 
- * This class implements the test cases for class ExcelParser. 
+import java.io.IOException;
+import java.util.List;
+
+
+/*
+ * This class implements the test cases for class ExcelParser.
  * It test for the container size, Header size of input file and available nut codes.
- * 
+ *
+ * Runs test cases sequentially to decrease the runtime
+ *
  * Author: Amit Kumar
- * 
- * 
+ *
+ *
  * */
 
-public class ExcelParserTest {
+import static org.junit.Assert.assertEquals;
 
-    public static ExcelParser excelParserDE =  new ExcelParser();
-    public static ExcelParser excelParserUK =  new ExcelParser();
-	
-    public static void intialMethodCallExcelParserDE() throws IOException {
-    	// This method is initial starting point for ExcelParser. 
-    	// Call this function first if individual test cases needs to be executed
-    	
-    	excelParserDE.setLauSourceDirectory();
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ExcelParserTest {
+    public static ExcelParser excelParserDE = new ExcelParser();
+    public static ExcelParser excelParserUK = new ExcelParser();
+
+
+    @Test
+    public void a_testGetCodes() throws Exception {
+        // confirms the number of nuts mapped
+        excelParserDE.setLauSourceDirectory();
+        assertEquals(401, excelParserDE.getCodes("DE").size());
     }
-    public static void intialMethodCallExcelParserUK() throws IOException {
-    	// This method is initial starting point for ExcelParser. 
-    	// Call this function first if individual test cases needs to be executed
-    	
-    	excelParserUK.setLauSourceDirectory();
-    }
+
     @Test
-	public void testContainerDE() throws Exception {
-		//Test : Checking if container is not empty for country code : DE 
-    	
-    	intialMethodCallExcelParserDE();
-		boolean hm = excelParserDE.getCodes("DE").isEmpty();
-		assertEquals(false, hm);
-	}
-    
-    @Test
-    public void testGetCodesDE() throws Exception {
-    	//Test: Checking the number of rows available in country code DE
-   
-    	assertEquals(402, excelParserDE.getCodes("DE").size());
-    }
-    
-    @Test
-	public void testFileName1() throws Exception {
-		//Test: Checking if the container is fetching correct value
-		
-		LauContainer file_name = excelParserDE.getData("DEF04", "01004000");
-		assertEquals("Neumünster | Neumünster, Stadt | 01004000", file_name.toString());
-	}
-	
-	@Test
-	public void testFileName12() throws Exception {
-		//Test: Checking if the container is fetching correct value
-		
-		LauContainer file_name = excelParserDE.getData("DE93A", "03360006");
-		assertEquals("Ebstorf | Ebstorf,Klosterflecken | 03360006", file_name.toString());
-	}
-    
-    @Test
-    public void testCountryId() throws Exception {
-        //Test: Checking the number of country id's fetched
-    	
+    public void b_testCountryId() throws Exception {
+        //confirms the no . of countries in the xlsx
+        //excelParser.setLauSourceDirectory();
+        //excelParserDE.setLauSourceDirectory();
         List<String> countryIds = excelParserDE.getCountryIds();
         assertEquals(39, countryIds.size());
     }
 
-	@Test
-	public void testHeaderSize() throws Exception {
-		//Test: Checking the size of header(Number of columns) in container. 
-		
-		int header_size = excelParserDE.getKeys().size();
-		assertEquals(20, header_size);
-	}
-	
-	@Test
-	public void testFileName() throws Exception {
-		//Test: Checking if the file name parsed is correct
-		
-		String file_name = excelParserDE.FILE_NAME;
-		assertEquals("EU-28-LAU-2019-NUTS-2016.xlsx", file_name);
-	}
-	
-	@Test
-	public void testContainerUK() throws Exception {
-		//Test: Checking if container is not empty for country code : UK
-		intialMethodCallExcelParserUK();	
-		boolean hm = excelParserUK.getCodes("UK").isEmpty();
-		assertEquals(false, hm);
-	}
-	    
-	@Test
-	public void testGetCodesUK() throws Exception {
-		//Test: Checking the number of rows available in country code DE
-	    	
-		assertEquals(180, excelParserUK.getCodes("UK").size());
-			
-	}
-	
+    @Test
+    public void c_testDEContainer1() throws Exception {
+        //Test: Checking if the container is fetching correct value
+        //excelParserDE.setLauSourceDirectory();
+        LauContainer file_name = excelParserDE.getData("DEF04", "01004000");
+        assertEquals("Neumünster | Neumünster, Stadt | 01004000", file_name.toString());
+    }
+
+    @Test
+    public void d_testDEContainer2() throws Exception {
+        //Test: Checking if the container is fetching correct value
+        //excelParserDE.setLauSourceDirectory();
+        LauContainer file_name = excelParserDE.getData("DE93A", "03360006");
+        assertEquals("Ebstorf | Ebstorf,Klosterflecken | 03360006", file_name.toString());
+    }
+
+    @Test
+    public void e_testHeaderSize() throws Exception {
+        //Test: Checking the size of header(Number of columns) in container.
+
+        int header_size = excelParserDE.getKeys().size();
+        assertEquals(20, header_size);
+    }
+
+    @Test
+    public void f_testContainerUK() throws Exception {
+        //Test: Checking if container is not empty for country code : UK
+
+        excelParserUK.setLauSourceDirectory();
+        boolean hm = excelParserUK.getCodes("UK").isEmpty();
+        assertEquals(false, hm);
+    }
+
+    @Test
+    public void g_testGetCodesUK() throws Exception {
+        //Test: Checking the number of rows available in country code DE
+
+        assertEquals(179, excelParserUK.getCodes("UK").size());
+
+    }
+
+    @Test
+    public void h_testUKContainer1() throws Exception {
+        //Test: Checking ifthe container is fetching correct value
+        //excelParserUK.setLauSourceDirectory();
+
+        LauContainer file_name = excelParserUK.getData("UKF11", "E06000015");
+        assertEquals("Derby |  | E06000015", file_name.toString());
+    }
+
 }
